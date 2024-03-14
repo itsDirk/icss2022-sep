@@ -3,15 +3,15 @@ grammar ICSS;
 //--- LEXER: ---
 
 // IF support:
-IF: 'if';
-ELSE: 'else';
+IF: 'if' | 'IF' | 'If';
+ELSE: 'else' | 'ELSE' | 'Else';
 BOX_BRACKET_OPEN: '[';
 BOX_BRACKET_CLOSE: ']';
 
 
 //Literals
-TRUE: 'TRUE';
-FALSE: 'FALSE';
+TRUE: 'TRUE' | 'True' | 'true';
+FALSE: 'FALSE' | 'False' | 'false';
 PIXELSIZE: [0-9]+ 'px';
 PERCENTAGE: [0-9]+ '%';
 SCALAR: [0-9]+;
