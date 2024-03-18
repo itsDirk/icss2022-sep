@@ -8,14 +8,12 @@ ELSE: 'else' | 'ELSE' | 'Else';
 BOX_BRACKET_OPEN: '[';
 BOX_BRACKET_CLOSE: ']';
 
-
 //Literals
 TRUE: 'TRUE' | 'True' | 'true';
 FALSE: 'FALSE' | 'False' | 'false';
 PIXELSIZE: [0-9]+ 'px';
 PERCENTAGE: [0-9]+ '%';
 SCALAR: [0-9]+;
-
 
 //Color value takes precedence over id idents
 COLOR: '#' [0-9a-f] [0-9a-f] [0-9a-f] [0-9a-f] [0-9a-f] [0-9a-f];
@@ -45,5 +43,26 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: EOF;
+stylesheet: variableAssignment* ruleAssignement* EOF;
 
+variableAssignment: variableName ASSIGNMENT_OPERATOR expression SEMICOLON;
+
+variableName: CAPITAL_IDENT;
+propertyName: LOWER_IDENT;
+expression: literal | expression MUL expression | expression (PLUS | MIN) expression;
+
+literal: boolLiteral | colorLiteral | percentageLiteral | pixelLiteral | scalarLiteral | variableName;
+boolLiteral: TRUE | FALSE;
+colorLiteral: COLOR;
+pixelLiteral: PIXELSIZE;
+percentageLiteral: PERCENTAGE;
+scalarLiteral: SCALAR;
+
+
+ruleAssignement: selector OPEN_BRACE ruleBody CLOSE_BRACE;
+selector: LOWER_IDENT | CLASS_IDENT | ID_IDENT;
+
+ruleBody: (declaration | ifClause | variableAssignment)*;
+declaration: propertyName COLON expression SEMICOLON;
+ifClause: IF BOX_BRACKET_OPEN (variableName | boolLiteral) BOX_BRACKET_CLOSE OPEN_BRACE ruleBody CLOSE_BRACE elseClause?;
+elseClause: ELSE OPEN_BRACE ruleBody CLOSE_BRACE;
