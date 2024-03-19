@@ -49,8 +49,11 @@ variableAssignment: variableName ASSIGNMENT_OPERATOR expression SEMICOLON;
 
 variableName: CAPITAL_IDENT;
 propertyName: LOWER_IDENT;
+
+// Operations
 expression: literal | expression MUL expression | expression (PLUS | MIN) expression;
 
+// Literals
 literal: boolLiteral | colorLiteral | percentageLiteral | pixelLiteral | scalarLiteral | variableName;
 boolLiteral: TRUE | FALSE;
 colorLiteral: COLOR;
@@ -58,9 +61,11 @@ pixelLiteral: PIXELSIZE;
 percentageLiteral: PERCENTAGE;
 scalarLiteral: SCALAR;
 
+// Selectors
+selector: LOWER_IDENT | CLASS_IDENT | ID_IDENT;
 
 ruleAssignement: selector OPEN_BRACE ruleBody CLOSE_BRACE;
-selector: LOWER_IDENT | CLASS_IDENT | ID_IDENT;
+
 
 ruleBody: (declaration | ifClause | variableAssignment)*;
 declaration: propertyName COLON expression SEMICOLON;
