@@ -62,7 +62,7 @@ percentageLiteral: PERCENTAGE;
 scalarLiteral: SCALAR;
 
 // Selectors
-selector: LOWER_IDENT | CLASS_IDENT | ID_IDENT;
+selector: LOWER_IDENT #tagSelector | CLASS_IDENT #classSelector | ID_IDENT #idSelector;
 
 ruleAssignement: selector OPEN_BRACE ruleBody CLOSE_BRACE;
 
