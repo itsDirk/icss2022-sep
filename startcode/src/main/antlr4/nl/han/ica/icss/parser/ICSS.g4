@@ -62,10 +62,12 @@ percentageLiteral: PERCENTAGE;
 scalarLiteral: SCALAR;
 
 // Selectors
-selector: LOWER_IDENT #tagSelector | CLASS_IDENT #classSelector | ID_IDENT #idSelector;
+selector: tagSelector | classSelector | idSelector;
+tagSelector: LOWER_IDENT;
+classSelector: CLASS_IDENT;
+idSelector: ID_IDENT;
 
 ruleAssignement: selector OPEN_BRACE ruleBody CLOSE_BRACE;
-
 
 ruleBody: (declaration | ifClause | variableAssignment)*;
 declaration: propertyName COLON expression SEMICOLON;
