@@ -211,18 +211,6 @@ public class ASTListener extends ICSSBaseListener {
         VariableAssignment variableAssignment = (VariableAssignment) currentContainer.pop();
         currentContainer.peek().addChild(variableAssignment);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 //    //RuleBody
 //    @Override
 //    public void enterRuleBody(ICSSParser.RuleBodyContext ctx) {
@@ -251,8 +239,4 @@ public class ASTListener extends ICSSBaseListener {
 //            }
 //        }
 //    }
-
-
-
-
 }
