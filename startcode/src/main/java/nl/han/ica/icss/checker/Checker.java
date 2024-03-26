@@ -63,6 +63,7 @@ public class Checker {
     }
 
     private void checkDeclaration(Declaration declaration) {
+        PropertyName propertyName = checkPropertyName(declaration.property);
         ExpressionType expressionType = checkExpression(declaration.expression);
 
         if (expressionType != ExpressionType.UNDEFINED) {
@@ -100,6 +101,17 @@ public class Checker {
         }
         expression.setError("Ongeldig type: TODO");
         return ExpressionType.UNDEFINED;
+    }
+
+    private PropertyName checkPropertyName(PropertyName property) {
+        String[] validProperties = {"width", "height", "color", "background-color"};
+        for (String validProperty : validProperties) {
+            if (property.name.equals(validProperty)) {
+                return property;
+            }
+        }
+        property.setError("Ongeldige eigenschap: " + property.name);
+        return null;
     }
 
     private ExpressionType checkLiteral(Literal literal) {
