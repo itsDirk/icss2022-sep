@@ -45,13 +45,13 @@ public class ASTListener extends ICSSBaseListener {
 
     // RuleAssignement
     @Override
-    public void enterRuleAssignement(ICSSParser.RuleAssignementContext ctx) {
+    public void enterRuleAssignment(ICSSParser.RuleAssignmentContext ctx) {
         Stylerule stylerule = new Stylerule();
         currentContainer.push(stylerule);
     }
 
     @Override
-    public void exitRuleAssignement(ICSSParser.RuleAssignementContext ctx) {
+    public void exitRuleAssignment(ICSSParser.RuleAssignmentContext ctx) {
         Stylerule stylerule = (Stylerule) currentContainer.pop();
         currentContainer.peek().addChild(stylerule);
     }
@@ -176,14 +176,14 @@ public class ASTListener extends ICSSBaseListener {
     // Property Name
     @Override
     public void enterPropertyName(ICSSParser.PropertyNameContext ctx) {
-        Declaration declaration = new Declaration(ctx.getText());
-        currentContainer.push(declaration);
+        PropertyName propertyName = new PropertyName(ctx.getText());
+        currentContainer.push(propertyName);
     }
 
     @Override
     public void exitPropertyName(ICSSParser.PropertyNameContext ctx) {
-        Declaration declaration = (Declaration) currentContainer.pop();
-        currentContainer.peek().addChild(declaration);
+        PropertyName propertyName = (PropertyName) currentContainer.pop();
+        currentContainer.peek().addChild(propertyName);
     }
 
     // Variable Name
@@ -211,32 +211,6 @@ public class ASTListener extends ICSSBaseListener {
         VariableAssignment variableAssignment = (VariableAssignment) currentContainer.pop();
         currentContainer.peek().addChild(variableAssignment);
     }
-//    //RuleBody
-//    @Override
-//    public void enterRuleBody(ICSSParser.RuleBodyContext ctx) {
-//        Stylerule stylerule = new Stylerule();
-//        currentContainer.push(stylerule);
-//    }
-//
-//    @Override
-//    public void exitRuleBody(ICSSParser.RuleBodyContext ctx) {
-//        RuleBody ruleBody = (RuleBody) currentContainer.pop();
-//        currentContainer.peek().addChild(ruleBody);
-//    }
 
-//    public void checkStyleRule(Stylerule rule) {
-//        for (ASTNode child : rule.getChildren()){
-//            if (child instanceof Declaration){
-//
-//            }
-//        }
-//    }
-//
-//    private void checkDeclaration(Declaration declaration) {
-//        if (declaration.property.equals("width")){
-//            if(!(declaration.expression.equals(PixelLiteral))){
-//                declaration.setError("Width must be a pixel literal");
-//            }
-//        }
-//    }
+
 }

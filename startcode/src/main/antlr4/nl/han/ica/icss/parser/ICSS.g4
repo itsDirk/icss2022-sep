@@ -43,7 +43,7 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: variableAssignment* ruleAssignement* EOF;
+stylesheet: variableAssignment* ruleAssignment* EOF;
 
 variableAssignment: variableName ASSIGNMENT_OPERATOR expression SEMICOLON;
 
@@ -67,7 +67,7 @@ tagSelector: LOWER_IDENT;
 classSelector: CLASS_IDENT;
 idSelector: ID_IDENT;
 
-ruleAssignement: selector OPEN_BRACE ruleBody CLOSE_BRACE;
+ruleAssignment: selector OPEN_BRACE ruleBody CLOSE_BRACE;
 
 ruleBody: (declaration | ifClause | variableAssignment)*;
 declaration: propertyName COLON expression SEMICOLON;
