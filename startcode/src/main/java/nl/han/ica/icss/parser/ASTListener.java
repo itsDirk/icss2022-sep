@@ -6,6 +6,9 @@ import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
+import nl.han.ica.icss.ast.operations.AddOperation;
+import nl.han.ica.icss.ast.operations.MultiplyOperation;
+import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.selectors.ClassSelector;
 import nl.han.ica.icss.ast.selectors.IdSelector;
 import nl.han.ica.icss.ast.selectors.TagSelector;
@@ -212,5 +215,35 @@ public class ASTListener extends ICSSBaseListener {
         currentContainer.peek().addChild(variableAssignment);
     }
 
+    // Add Subtract Expression
+    @Override
+    public void enterAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx) {
+        if (ctx.getChild(1).getText().equals("+")) { // Add
+            AddOperation addOperation = new AddOperation();
+            currentContainer.push(addOperation);
+        } else if (ctx.getChild(1).getText().equals("-")){ // Subtract
+            SubtractOperation subtractOperation = new SubtractOperation();
+            currentContainer.push(subtractOperation);
+        }
+    }
+
+    @Override
+    public void exitAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx) {
+        AddOperation addOperation = (AddOperation) currentContainer.pop();
+        currentContainer.peek().addChild(addOperation);
+    }
+
+    // Multiply Expression
+    @Override
+    public void enterMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) {
+        MultiplyOperation multiplyOperation = new MultiplyOperation();
+        currentContainer.push(multiplyOperation);
+    }
+
+    @Override
+    public void exitMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) {
+        MultiplyOperation multiplyOperation = (MultiplyOperation) currentContainer.pop();
+        currentContainer.peek().addChild(multiplyOperation);
+    }
 
 }

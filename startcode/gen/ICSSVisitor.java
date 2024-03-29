@@ -34,11 +34,26 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPropertyName(ICSSParser.PropertyNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ICSSParser#expression}.
+	 * Visit a parse tree produced by the {@code addSubtractExpression}
+	 * labeled alternative in {@link ICSSParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(ICSSParser.ExpressionContext ctx);
+	T visitAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code multiplyExpression}
+	 * labeled alternative in {@link ICSSParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code literalExpression}
+	 * labeled alternative in {@link ICSSParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLiteralExpression(ICSSParser.LiteralExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ICSSParser#literal}.
 	 * @param ctx the parse tree
@@ -82,11 +97,29 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelector(ICSSParser.SelectorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ICSSParser#ruleAssignement}.
+	 * Visit a parse tree produced by {@link ICSSParser#tagSelector}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRuleAssignement(ICSSParser.RuleAssignementContext ctx);
+	T visitTagSelector(ICSSParser.TagSelectorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ICSSParser#classSelector}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitClassSelector(ICSSParser.ClassSelectorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ICSSParser#idSelector}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdSelector(ICSSParser.IdSelectorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ICSSParser#ruleAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRuleAssignment(ICSSParser.RuleAssignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ICSSParser#ruleBody}.
 	 * @param ctx the parse tree
