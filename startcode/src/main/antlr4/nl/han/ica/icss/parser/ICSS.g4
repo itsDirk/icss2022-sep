@@ -51,7 +51,7 @@ variableName: CAPITAL_IDENT;
 propertyName: LOWER_IDENT;
 
 // Operations
-expression: literal #literalExpression| expression MUL expression #multiplyExpression | expression (PLUS | MIN) expression #addSubtractExpression;
+expression: literal #literalExpression| expression MUL expression #multiplyExpression | expression PLUS expression #addExpression | expression MIN expression #subtractExpression;
 
 // Literals
 literal: boolLiteral | colorLiteral | percentageLiteral | pixelLiteral | scalarLiteral | variableName;

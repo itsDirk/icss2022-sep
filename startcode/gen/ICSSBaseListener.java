@@ -64,13 +64,25 @@ public class ICSSBaseListener implements ICSSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx) { }
+	@Override public void enterAddExpression(ICSSParser.AddExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx) { }
+	@Override public void exitAddExpression(ICSSParser.AddExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSubtractExpression(ICSSParser.SubtractExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSubtractExpression(ICSSParser.SubtractExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -3,9 +3,7 @@ package nl.han.ica.icss.parser;
 import nl.han.ica.datastructures.HANStack;
 import nl.han.ica.datastructures.IHANStack;
 import nl.han.ica.icss.ast.*;
-import nl.han.ica.icss.ast.literals.BoolLiteral;
-import nl.han.ica.icss.ast.literals.ColorLiteral;
-import nl.han.ica.icss.ast.literals.PixelLiteral;
+import nl.han.ica.icss.ast.literals.*;
 import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
@@ -111,6 +109,7 @@ public class ASTListener extends ICSSBaseListener {
         currentContainer.peek().addChild(declaration);
     }
 
+
     // Bool Literal
     @Override
     public void enterBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
@@ -153,7 +152,7 @@ public class ASTListener extends ICSSBaseListener {
     // Percentage Literal
     @Override
     public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
-        Literal literal = new PixelLiteral(ctx.getText());
+        Literal literal = new PercentageLiteral(ctx.getText());
         currentContainer.push(literal);
     }
 
@@ -166,7 +165,7 @@ public class ASTListener extends ICSSBaseListener {
     // Scalar Literal
     @Override
     public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
-        Literal literal = new PixelLiteral(ctx.getText());
+        Literal literal = new ScalarLiteral(ctx.getText());
         currentContainer.push(literal);
     }
 
@@ -215,22 +214,30 @@ public class ASTListener extends ICSSBaseListener {
         currentContainer.peek().addChild(variableAssignment);
     }
 
-    // Add Subtract Expression
+    // Add Expression
     @Override
-    public void enterAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx) {
-        if (ctx.getChild(1).getText().equals("+")) { // Add
-            AddOperation addOperation = new AddOperation();
-            currentContainer.push(addOperation);
-        } else if (ctx.getChild(1).getText().equals("-")){ // Subtract
-            SubtractOperation subtractOperation = new SubtractOperation();
-            currentContainer.push(subtractOperation);
-        }
+    public void enterAddExpression(ICSSParser.AddExpressionContext ctx) {
+        AddOperation addOperation = new AddOperation();
+        currentContainer.push(addOperation);
     }
 
     @Override
-    public void exitAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx) {
+    public void exitAddExpression(ICSSParser.AddExpressionContext ctx) {
         AddOperation addOperation = (AddOperation) currentContainer.pop();
         currentContainer.peek().addChild(addOperation);
+    }
+
+    // Subtract Expression
+    @Override
+    public void enterSubtractExpression(ICSSParser.SubtractExpressionContext ctx) {
+        SubtractOperation subtractOperation = new SubtractOperation();
+        currentContainer.push(subtractOperation);
+    }
+
+    @Override
+    public void exitSubtractExpression(ICSSParser.SubtractExpressionContext ctx) {
+        SubtractOperation subtractOperation = (SubtractOperation) currentContainer.pop();
+        currentContainer.peek().addChild(subtractOperation);
     }
 
     // Multiply Expression
@@ -244,6 +251,32 @@ public class ASTListener extends ICSSBaseListener {
     public void exitMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) {
         MultiplyOperation multiplyOperation = (MultiplyOperation) currentContainer.pop();
         currentContainer.peek().addChild(multiplyOperation);
+    }
+
+    // If Clause
+    @Override
+    public void enterIfClause(ICSSParser.IfClauseContext ctx) {
+        IfClause ifClause = new IfClause();
+        currentContainer.push(ifClause);
+    }
+
+    @Override
+    public void exitIfClause(ICSSParser.IfClauseContext ctx) {
+        IfClause ifClause = (IfClause) currentContainer.pop();
+        currentContainer.peek().addChild(ifClause);
+    }
+
+    // Else Clause
+    @Override
+    public void enterElseClause(ICSSParser.ElseClauseContext ctx) {
+        ElseClause elseClause = new ElseClause();
+        currentContainer.push(elseClause);
+    }
+
+    @Override
+    public void exitElseClause(ICSSParser.ElseClauseContext ctx) {
+        ElseClause elseClause = (ElseClause) currentContainer.pop();
+        currentContainer.peek().addChild(elseClause);
     }
 
 }

@@ -34,12 +34,19 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPropertyName(ICSSParser.PropertyNameContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code addSubtractExpression}
+	 * Visit a parse tree produced by the {@code addExpression}
 	 * labeled alternative in {@link ICSSParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAddSubtractExpression(ICSSParser.AddSubtractExpressionContext ctx);
+	T visitAddExpression(ICSSParser.AddExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code subtractExpression}
+	 * labeled alternative in {@link ICSSParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSubtractExpression(ICSSParser.SubtractExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code multiplyExpression}
 	 * labeled alternative in {@link ICSSParser#expression}.
