@@ -38,7 +38,7 @@ Alle Musts foutloos implementeren levert 90 punten op (7,5). Door de shoulds te 
 
 De code die je oplevert is een uitbreiding op de bij de opdracht beschikbaar gestelde startcode. Voor de code gelden de volgende algemene eisen.
 
-| ID   | Omschrijving                                                                                                                                                                                                                                                                                               | Prio | Punten | Competentie VT |
+| ID   | Omschrijving | Prio | Punten | Competentie VT |
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ------ | -------------- |
 | AL01 | De code behoudt de packagestructuur van de aangeleverde startcode. Toegevoegde code bevindt zich in de relevante packages.                                                                                                                                                                                 | Must | 0      | APP-6          |
 | AL02 | Alle code compileert en is te bouwen met Maven 3.6 of hoger, onder OpenJDK 13. Tip: controleer dit door **eerst** `mvn clean` uit te voeren alvorens te compileren en in te leveren, hierop een onvoldoende halen is echt zonde. **Gebruik van Oracle versies van Java is uitdrukkelijk niet toegestaan**. | Must | 0      | n.v.t.         |

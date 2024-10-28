@@ -1,4 +1,4 @@
-// Generated from C:/Users/vanro/OneDrive/Documenten/Leerjaar 3 HBO/ASD APP/Compiler opdracht/icss2022-sep/startcode/src/main/antlr4/nl/han/ica/icss/parser/ICSS.g4 by ANTLR 4.13.1
+// Generated from C:/Users/Dirk/Documents/GitHub/icss2022-sep/startcode/src/main/antlr4/nl/han/ica/icss/parser/ICSS.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -22,11 +22,11 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableAssignment(ICSSParser.VariableAssignmentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ICSSParser#variableName}.
+	 * Visit a parse tree produced by {@link ICSSParser#variableReference}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariableName(ICSSParser.VariableNameContext ctx);
+	T visitVariableReference(ICSSParser.VariableReferenceContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ICSSParser#propertyName}.
 	 * @param ctx the parse tree
@@ -34,33 +34,11 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPropertyName(ICSSParser.PropertyNameContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code addExpression}
-	 * labeled alternative in {@link ICSSParser#expression}.
+	 * Visit a parse tree produced by {@link ICSSParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAddExpression(ICSSParser.AddExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code subtractExpression}
-	 * labeled alternative in {@link ICSSParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSubtractExpression(ICSSParser.SubtractExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code multiplyExpression}
-	 * labeled alternative in {@link ICSSParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code literalExpression}
-	 * labeled alternative in {@link ICSSParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLiteralExpression(ICSSParser.LiteralExpressionContext ctx);
+	T visitExpression(ICSSParser.ExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ICSSParser#literal}.
 	 * @param ctx the parse tree
@@ -122,11 +100,11 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdSelector(ICSSParser.IdSelectorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ICSSParser#ruleAssignment}.
+	 * Visit a parse tree produced by {@link ICSSParser#styleRule}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitRuleAssignment(ICSSParser.RuleAssignmentContext ctx);
+	T visitStyleRule(ICSSParser.StyleRuleContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ICSSParser#ruleBody}.
 	 * @param ctx the parse tree

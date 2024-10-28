@@ -26,7 +26,7 @@ CLASS_IDENT: '.' [a-z0-9\-]+;
 LOWER_IDENT: [a-z] [a-z0-9\-]*;
 CAPITAL_IDENT: [A-Z] [A-Za-z0-9_]*;
 
-//All whitespace is skipped
+//All whitespaces are skipped
 WS: [ \t\r\n]+ -> skip;
 
 //
@@ -43,18 +43,18 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: variableAssignment* ruleAssignment* EOF;
+stylesheet: variableAssignment* styleRule* EOF;
 
-variableAssignment: variableName ASSIGNMENT_OPERATOR expression SEMICOLON;
+variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 
-variableName: CAPITAL_IDENT;
+variableReference: CAPITAL_IDENT;
 propertyName: LOWER_IDENT;
 
 // Operations
-expression: literal #literalExpression| expression MUL expression #multiplyExpression | expression PLUS expression #addExpression | expression MIN expression #subtractExpression;
+expression: literal | expression (MUL | PLUS | MIN) expression | variableReference;
 
 // Literals
-literal: boolLiteral | colorLiteral | percentageLiteral | pixelLiteral | scalarLiteral | variableName;
+literal: boolLiteral | colorLiteral | percentageLiteral | pixelLiteral | scalarLiteral;
 boolLiteral: TRUE | FALSE;
 colorLiteral: COLOR;
 pixelLiteral: PIXELSIZE;
@@ -67,9 +67,9 @@ tagSelector: LOWER_IDENT;
 classSelector: CLASS_IDENT;
 idSelector: ID_IDENT;
 
-ruleAssignment: selector OPEN_BRACE ruleBody CLOSE_BRACE;
+styleRule: selector OPEN_BRACE ruleBody CLOSE_BRACE;
 
 ruleBody: (declaration | ifClause | variableAssignment)*;
 declaration: propertyName COLON expression SEMICOLON;
-ifClause: IF BOX_BRACKET_OPEN (variableName | boolLiteral) BOX_BRACKET_CLOSE OPEN_BRACE ruleBody CLOSE_BRACE elseClause?;
+ifClause: IF BOX_BRACKET_OPEN (variableReference | boolLiteral) BOX_BRACKET_CLOSE OPEN_BRACE ruleBody CLOSE_BRACE elseClause?;
 elseClause: ELSE OPEN_BRACE ruleBody CLOSE_BRACE;

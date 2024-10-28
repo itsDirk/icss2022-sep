@@ -1,4 +1,4 @@
-// Generated from C:/Users/vanro/OneDrive/Documenten/Leerjaar 3 HBO/ASD APP/Compiler opdracht/icss2022-sep/startcode/src/main/antlr4/nl/han/ica/icss/parser/ICSS.g4 by ANTLR 4.13.1
+// Generated from C:/Users/Dirk/Documents/GitHub/icss2022-sep/startcode/src/main/antlr4/nl/han/ica/icss/parser/ICSS.g4 by ANTLR 4.13.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -40,13 +40,13 @@ public class ICSSBaseListener implements ICSSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableName(ICSSParser.VariableNameContext ctx) { }
+	@Override public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableName(ICSSParser.VariableNameContext ctx) { }
+	@Override public void exitVariableReference(ICSSParser.VariableReferenceContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -64,49 +64,13 @@ public class ICSSBaseListener implements ICSSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAddExpression(ICSSParser.AddExpressionContext ctx) { }
+	@Override public void enterExpression(ICSSParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAddExpression(ICSSParser.AddExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSubtractExpression(ICSSParser.SubtractExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSubtractExpression(ICSSParser.SubtractExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLiteralExpression(ICSSParser.LiteralExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLiteralExpression(ICSSParser.LiteralExpressionContext ctx) { }
+	@Override public void exitExpression(ICSSParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -232,13 +196,13 @@ public class ICSSBaseListener implements ICSSListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRuleAssignment(ICSSParser.RuleAssignmentContext ctx) { }
+	@Override public void enterStyleRule(ICSSParser.StyleRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRuleAssignment(ICSSParser.RuleAssignmentContext ctx) { }
+	@Override public void exitStyleRule(ICSSParser.StyleRuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
