@@ -332,11 +332,11 @@ public class ICSSParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExpressionContext extends ParserRuleContext {
-		public LiteralContext literal() {
-			return getRuleContext(LiteralContext.class,0);
-		}
 		public VariableReferenceContext variableReference() {
 			return getRuleContext(VariableReferenceContext.class,0);
+		}
+		public LiteralContext literal() {
+			return getRuleContext(LiteralContext.class,0);
 		}
 		public List<ExpressionContext> expression() {
 			return getRuleContexts(ExpressionContext.class);
@@ -386,6 +386,12 @@ public class ICSSParser extends Parser {
 			setState(66);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
+			case CAPITAL_IDENT:
+				{
+				setState(64);
+				variableReference();
+				}
+				break;
 			case TRUE:
 			case FALSE:
 			case PIXELSIZE:
@@ -393,14 +399,8 @@ public class ICSSParser extends Parser {
 			case SCALAR:
 			case COLOR:
 				{
-				setState(64);
-				literal();
-				}
-				break;
-			case CAPITAL_IDENT:
-				{
 				setState(65);
-				variableReference();
+				literal();
 				}
 				break;
 			default:
@@ -1413,7 +1413,7 @@ public class ICSSParser extends Parser {
 		"89\u0003\b\u0004\u00009:\u0005\u0012\u0000\u0000:\u0003\u0001\u0000\u0000"+
 		"\u0000;<\u0005\u000e\u0000\u0000<\u0005\u0001\u0000\u0000\u0000=>\u0005"+
 		"\r\u0000\u0000>\u0007\u0001\u0000\u0000\u0000?B\u0006\u0004\uffff\uffff"+
-		"\u0000@C\u0003\n\u0005\u0000AC\u0003\u0004\u0002\u0000B@\u0001\u0000\u0000"+
+		"\u0000@C\u0003\u0004\u0002\u0000AC\u0003\n\u0005\u0000B@\u0001\u0000\u0000"+
 		"\u0000BA\u0001\u0000\u0000\u0000CL\u0001\u0000\u0000\u0000DE\n\u0003\u0000"+
 		"\u0000EF\u0005\u0016\u0000\u0000FK\u0003\b\u0004\u0004GH\n\u0002\u0000"+
 		"\u0000HI\u0007\u0000\u0000\u0000IK\u0003\b\u0004\u0003JD\u0001\u0000\u0000"+

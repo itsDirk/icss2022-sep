@@ -22,13 +22,13 @@ public class Checker {
         checkStylesheet(ast.root);
     }
 
-    private void checkStylesheet(Stylesheet Stylesheet) {
+    private void checkStylesheet(Stylesheet stylesheet) {
         variableTypes.addFirst(new HashMap<>());
-        for (ASTNode node : Stylesheet.getChildren()) {
+        for (ASTNode node : stylesheet.getChildren()) {
             if (node instanceof VariableAssignment) {
                 checkVariableAssignment((VariableAssignment) node);
             } else if (node instanceof Stylerule) {
-                checkRuleAssignement((Stylerule) node);
+                checkStyleRule((Stylerule) node);
             } else {
                 node.setError("Ongeldig type: verwachtte VariableAssignment of Stylerule");
             }
@@ -37,8 +37,6 @@ public class Checker {
     }
 
     private void checkVariableAssignment(VariableAssignment variableAssignment) {
-        checkVariableName(variableAssignment.name);
-
         if (variableAssignment.expression instanceof BoolLiteral) {
             variableTypes.getFirst().put(variableAssignment.name.name, ExpressionType.BOOL);
         } else if (variableAssignment.expression instanceof ColorLiteral) {
@@ -54,14 +52,15 @@ public class Checker {
         }
     }
 
-    private void checkVariableName(VariableReference name) {
-        if (!variableTypes.getFirst().containsKey(name.name)) {
-            name.setError("Variabele niet gedefinieerd: " + name.name);
+    private void checkVariableName(VariableReference variableReference) {
+        if (!variableTypes.getFirst().containsKey(variableReference.name)) {
+            variableReference.setError("Variabele niet gedefinieerd: " + variableReference.name);
         }
     }
 
-    private void checkRuleAssignement(Stylerule stylerule) {
+    private void checkStyleRule(Stylerule stylerule) {
         variableTypes.addFirst(new HashMap<>());
+
         for (ASTNode node : stylerule.body) {
             if (node instanceof VariableAssignment) {
                 checkVariableAssignment((VariableAssignment) node);
