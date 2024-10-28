@@ -32,27 +32,15 @@ public class ASTListener extends ICSSBaseListener {
         return ast;
     }
 
-//	public void enterStylesheet(ICSSParser.StylesheetContext ctx) {
-//		Stylesheet stylesheet = new Stylesheet();
-////		ast.root.addChild(stylesheet);
-//		currentContainer.push(stylesheet);
-//	}
-//
-//	public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
-//		Stylesheet stylesheet = (Stylesheet) currentContainer.pop();
-////		currentContainer.peek().addChild(stylesheet);
-//		currentContainer.pop();
-//	}
-
     // RuleAssignement
     @Override
-    public void enterRuleAssignment(ICSSParser.RuleAssignmentContext ctx) {
+    public void enterStyleRule(ICSSParser.StyleRuleContext ctx) {
         Stylerule stylerule = new Stylerule();
         currentContainer.push(stylerule);
     }
 
     @Override
-    public void exitRuleAssignment(ICSSParser.RuleAssignmentContext ctx) {
+    public void exitStyleRule(ICSSParser.StyleRuleContext ctx) {
         Stylerule stylerule = (Stylerule) currentContainer.pop();
         currentContainer.peek().addChild(stylerule);
     }
@@ -114,12 +102,6 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
         Literal literal = new BoolLiteral(ctx.getText());
-        currentContainer.push(literal);
-    }
-
-    @Override
-    public void exitBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
-        Literal literal = (Literal) currentContainer.pop();
         currentContainer.peek().addChild(literal);
     }
 
@@ -127,12 +109,6 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
         Literal literal = new ColorLiteral(ctx.getText());
-        currentContainer.push(literal);
-    }
-
-    @Override
-    public void exitColorLiteral(ICSSParser.ColorLiteralContext ctx) {
-        Literal literal = (Literal) currentContainer.pop();
         currentContainer.peek().addChild(literal);
     }
 
@@ -140,12 +116,6 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
         Literal literal = new PixelLiteral(ctx.getText());
-        currentContainer.push(literal);
-    }
-
-    @Override
-    public void exitPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
-        Literal literal = (Literal) currentContainer.pop();
         currentContainer.peek().addChild(literal);
     }
 
@@ -153,12 +123,6 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
         Literal literal = new PercentageLiteral(ctx.getText());
-        currentContainer.push(literal);
-    }
-
-    @Override
-    public void exitPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
-        Literal literal = (Literal) currentContainer.pop();
         currentContainer.peek().addChild(literal);
     }
 
@@ -166,12 +130,6 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
         Literal literal = new ScalarLiteral(ctx.getText());
-        currentContainer.push(literal);
-    }
-
-    @Override
-    public void exitScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
-        Literal literal = (Literal) currentContainer.pop();
         currentContainer.peek().addChild(literal);
     }
 
@@ -190,13 +148,13 @@ public class ASTListener extends ICSSBaseListener {
 
     // Variable Name
     @Override
-    public void enterVariableName(ICSSParser.VariableNameContext ctx) {
+    public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
         VariableReference variableReference = new VariableReference(ctx.getText());
         currentContainer.push(variableReference);
     }
 
     @Override
-    public void exitVariableName(ICSSParser.VariableNameContext ctx) {
+    public void exitVariableReference(ICSSParser.VariableReferenceContext ctx) {
         VariableReference variableReference = (VariableReference) currentContainer.pop();
         currentContainer.peek().addChild(variableReference);
     }
@@ -214,43 +172,32 @@ public class ASTListener extends ICSSBaseListener {
         currentContainer.peek().addChild(variableAssignment);
     }
 
-    // Add Expression
+    // All expressions
     @Override
-    public void enterAddExpression(ICSSParser.AddExpressionContext ctx) {
-        AddOperation addOperation = new AddOperation();
-        currentContainer.push(addOperation);
+    public void enterExpression(ICSSParser.ExpressionContext ctx) {
+        if (ctx.getChildCount() == 3) {
+            Operation operation;
+            switch (ctx.getChild(1).getText()) {
+                case "+":
+                    operation = new AddOperation();
+                    break;
+                case "-":
+                    operation = new SubtractOperation();
+                    break;
+                default:
+                    operation = new MultiplyOperation();
+                    break;
+            }
+        currentContainer.push(operation);
+        }
     }
 
     @Override
-    public void exitAddExpression(ICSSParser.AddExpressionContext ctx) {
-        AddOperation addOperation = (AddOperation) currentContainer.pop();
-        currentContainer.peek().addChild(addOperation);
-    }
-
-    // Subtract Expression
-    @Override
-    public void enterSubtractExpression(ICSSParser.SubtractExpressionContext ctx) {
-        SubtractOperation subtractOperation = new SubtractOperation();
-        currentContainer.push(subtractOperation);
-    }
-
-    @Override
-    public void exitSubtractExpression(ICSSParser.SubtractExpressionContext ctx) {
-        SubtractOperation subtractOperation = (SubtractOperation) currentContainer.pop();
-        currentContainer.peek().addChild(subtractOperation);
-    }
-
-    // Multiply Expression
-    @Override
-    public void enterMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) {
-        MultiplyOperation multiplyOperation = new MultiplyOperation();
-        currentContainer.push(multiplyOperation);
-    }
-
-    @Override
-    public void exitMultiplyExpression(ICSSParser.MultiplyExpressionContext ctx) {
-        MultiplyOperation multiplyOperation = (MultiplyOperation) currentContainer.pop();
-        currentContainer.peek().addChild(multiplyOperation);
+    public void exitExpression(ICSSParser.ExpressionContext ctx) {
+        if (ctx.PLUS() != null || ctx.MIN() != null || ctx.MUL() != null) {
+            ASTNode operation = currentContainer.pop();
+            currentContainer.peek().addChild(operation);
+        }
     }
 
     // If Clause
