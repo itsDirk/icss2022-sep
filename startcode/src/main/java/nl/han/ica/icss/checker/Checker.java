@@ -239,10 +239,10 @@ public class Checker {
             checkLiteral((BoolLiteral) ifClause.conditionalExpression);
         } else if (ifClause.conditionalExpression instanceof VariableReference) {
             if (checkVariableReference((VariableReference) ifClause.conditionalExpression) != ExpressionType.BOOL) {
-                ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
+                ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + "; verwachtte Boolean");
             }
         } else {
-            ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
+            ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + "; verwachtte Boolean");
         }
 
         for (ASTNode node : ifClause.body) {
@@ -252,11 +252,13 @@ public class Checker {
                 checkDeclaration((Declaration) node);
             } else if (node instanceof IfClause) {
                 checkIfClause((IfClause) node);
-            } else if (node instanceof ElseClause) {
-                checkElseClause((ElseClause) node);
             } else {
                 node.setError("Ongeldige expressie: " + node.getClass().getSimpleName() + ", verwachtte VariableAssignment, Declaration, If Clause of Else Clause");
             }
+        }
+
+        if (ifClause.elseClause instanceof ElseClause) {
+            checkElseClause(ifClause.elseClause);
         }
         variableTypes.removeFirst();
     }
