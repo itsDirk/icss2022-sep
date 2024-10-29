@@ -64,6 +64,11 @@ public class Checker {
                 checkSelector((Selector) node);
             } else if (node instanceof Declaration) {
                 checkDeclaration((Declaration) node);
+            } else if (node instanceof IfClause) {
+                checkIfClause((IfClause) node);
+            } else if (node instanceof VariableAssignment) {
+                checkVariableAssignment((VariableAssignment) node);
+
             }
         }
         variableTypes.removeFirst();
@@ -227,48 +232,46 @@ public class Checker {
             return ExpressionType.UNDEFINED;
         }
     }
-//
-//    private void checkIfClause(IfClause ifClause) {
-//        variableTypes.addFirst(new HashMap<>());
-//        if (ifClause.conditionalExpression instanceof BoolLiteral) {
-//            checkLiteral((BoolLiteral) ifClause.conditionalExpression);
-//        } else if (ifClause.conditionalExpression instanceof VariableReference) {
-//            if (checkVariableReference((VariableReference) ifClause.conditionalExpression) != ExpressionType.BOOL) {
-//                ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
-//            }
-//        } else {
-//            ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
-//        }
-//
-//        for (ASTNode node : ifClause.body) {
-//            if (node instanceof VariableAssignment) {
-//                checkVariableAssignment((VariableAssignment) node);
-//            } else if (node instanceof Declaration) {
-//                checkDeclaration((Declaration) node);
-//            } else if (node instanceof IfClause) {
-//                checkIfClause((IfClause) node);
-//            } else if (node instanceof ElseClause) {
-//                checkElseClause((ElseClause) node);
-//            } else {
-//                node.setError("Ongeldige expressie: " + node.getClass().getSimpleName() + ", verwachtte VariableAssignment, Declaration, If Clause of Else Clause");
-//            }
-//        }
-//
-//    }
-//
-//    private void checkElseClause(ElseClause elseClause) {
-//        variableTypes.addFirst(new HashMap<>());
-//        for (ASTNode node : elseClause.body) {
-//            if (node instanceof VariableAssignment) {
-//                checkVariableAssignment((VariableAssignment) node);
-//            } else if (node instanceof Declaration) {
-//                checkDeclaration((Declaration) node);
-//            } else {
-//                node.setError("Else clause kan alleen worden gebruikt met declaraties en variabele toewijzingen");
-//            }
-//        }
-//        variableTypes.removeFirst();
-//    }
 
+    private void checkIfClause(IfClause ifClause) {
+        variableTypes.addFirst(new HashMap<>());
+        if (ifClause.conditionalExpression instanceof BoolLiteral) {
+            checkLiteral((BoolLiteral) ifClause.conditionalExpression);
+        } else if (ifClause.conditionalExpression instanceof VariableReference) {
+            if (checkVariableReference((VariableReference) ifClause.conditionalExpression) != ExpressionType.BOOL) {
+                ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
+            }
+        } else {
+            ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
+        }
 
+        for (ASTNode node : ifClause.body) {
+            if (node instanceof VariableAssignment) {
+                checkVariableAssignment((VariableAssignment) node);
+            } else if (node instanceof Declaration) {
+                checkDeclaration((Declaration) node);
+            } else if (node instanceof IfClause) {
+                checkIfClause((IfClause) node);
+            } else if (node instanceof ElseClause) {
+                checkElseClause((ElseClause) node);
+            } else {
+                node.setError("Ongeldige expressie: " + node.getClass().getSimpleName() + ", verwachtte VariableAssignment, Declaration, If Clause of Else Clause");
+            }
+        }
+        variableTypes.removeFirst();
+    }
+
+    private void checkElseClause(ElseClause elseClause) {
+        variableTypes.addFirst(new HashMap<>());
+        for (ASTNode node : elseClause.body) {
+            if (node instanceof VariableAssignment) {
+                checkVariableAssignment((VariableAssignment) node);
+            } else if (node instanceof Declaration) {
+                checkDeclaration((Declaration) node);
+            } else {
+                node.setError("Else clause kan alleen worden gebruikt met declaraties en variabele toewijzingen");
+            }
+        }
+        variableTypes.removeFirst();
+    }
 }
