@@ -7,9 +7,11 @@ import nl.han.ica.icss.ast.literals.*;
 import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
+import nl.han.ica.icss.ast.selectors.ClassSelector;
+import nl.han.ica.icss.ast.selectors.IdSelector;
+import nl.han.ica.icss.ast.selectors.TagSelector;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -30,7 +32,7 @@ public class Checker {
             } else if (node instanceof Stylerule) {
                 checkStyleRule((Stylerule) node);
             } else {
-                node.setError("Ongeldig type: verwachtte VariableAssignment of Stylerule");
+                node.setError("Ongeldig type: Stylerule");
             }
         }
         variableTypes.removeFirst();
@@ -47,36 +49,50 @@ public class Checker {
             variableTypes.getFirst().put(variableAssignment.name.name, ExpressionType.PERCENTAGE);
         } else if (variableAssignment.expression instanceof ScalarLiteral) {
             variableTypes.getFirst().put(variableAssignment.name.name, ExpressionType.SCALAR);
+        } else if (variableAssignment.expression instanceof Expression) {
+            variableTypes.getFirst().put(variableAssignment.name.name, checkExpression(variableAssignment.expression));
         } else {
             variableAssignment.setError("Ongeldig type: verwachtte Bool, Color, Pixel, Percentage of Scalar");
-        }
-    }
-
-    private void checkVariableName(VariableReference variableReference) {
-        if (!variableTypes.getFirst().containsKey(variableReference.name)) {
-            variableReference.setError("Variabele niet gedefinieerd: " + variableReference.name);
         }
     }
 
     private void checkStyleRule(Stylerule stylerule) {
         variableTypes.addFirst(new HashMap<>());
 
-        for (ASTNode node : stylerule.body) {
-            if (node instanceof VariableAssignment) {
-                checkVariableAssignment((VariableAssignment) node);
+        for (ASTNode node : stylerule.getChildren()) {
+            if (node instanceof TagSelector) {
+                checkSelector((Selector) node);
             } else if (node instanceof Declaration) {
                 checkDeclaration((Declaration) node);
-            } else if (node instanceof IfClause) {
-                checkIfClause((IfClause) node);
-            } else {
-                node.setError("Ongeldig type: verwachtte VariableAssignment of Declaration");
             }
         }
         variableTypes.removeFirst();
     }
 
+    private void checkSelector(Selector selector) {
+        // No further checking needed for ClassSelectors and IdSelectors
+        if (selector instanceof ClassSelector || selector instanceof IdSelector) {
+            return;
+        } else if (selector instanceof TagSelector) {
+            checkTagSelector((TagSelector) selector);
+        } else {
+            selector.setError("Ongeldig type: verwachtte TagSelector");
+        }
+    }
+
+    private void checkTagSelector(TagSelector tagSelector) {
+        // List of all valid tag selectors
+        String[] validTagSelectors = {"p", "a", "h1"};
+
+        for (String validTagSelector : validTagSelectors) {
+            if (tagSelector.tag.equals(validTagSelector)) {
+                return;
+            }
+        }
+        tagSelector.setError("Ongeldige tag: " + tagSelector.tag);
+    }
+
     private void checkDeclaration(Declaration declaration) {
-//        PropertyName propertyName = checkPropertyName(declaration.property);
         ExpressionType expressionType = checkExpression(declaration.expression);
 
         if (expressionType != ExpressionType.UNDEFINED) {
@@ -119,17 +135,6 @@ public class Checker {
         return ExpressionType.UNDEFINED;
     }
 
-
-    //    private PropertyName checkPropertyName(PropertyName property) {
-//        String[] validProperties = {"width", "height", "color", "background-color"};
-//        for (String validProperty : validProperties) {
-//            if (property.name.equals(validProperty)) {
-//                return property;
-//            }
-//        }
-//        property.setError("Ongeldige eigenschap: " + property.name);
-//        return null;
-//    }
     private ExpressionType checkLiteral(Literal literal) {
         if (literal instanceof BoolLiteral) {
             return ExpressionType.BOOL;
@@ -181,9 +186,10 @@ public class Checker {
 
         if (leftHandType == ExpressionType.SCALAR || rightHandType == ExpressionType.SCALAR) {
             return leftHandType == ExpressionType.SCALAR ? rightHandType : leftHandType;
-        }
-
-        if (leftHandType == rightHandType){
+        } else if (leftHandType == ExpressionType.UNDEFINED || rightHandType == ExpressionType.UNDEFINED) {
+            operation.setError("Ongeldige operatie: " + leftHandType + " * " + rightHandType + "; kan niet vermenigvuldigen met ongedefinieerde types");
+            return ExpressionType.UNDEFINED;
+        } else if (leftHandType == rightHandType) {
             operation.setError("Ongeldige operatie: " + leftHandType + " * " + rightHandType + "; kan gelijke types niet vermenigvuldigen");
             return ExpressionType.UNDEFINED;
         }
@@ -193,70 +199,76 @@ public class Checker {
     }
 
     private ExpressionType checkAddOperation(AddOperation operation) {
-        ExpressionType leftType = checkExpression(operation.lhs);
-        ExpressionType rightType = checkExpression(operation.rhs);
+        ExpressionType leftHandType = checkExpression(operation.lhs);
+        ExpressionType rightHandType = checkExpression(operation.rhs);
 
-        if (leftType == rightType) {
-            return leftType;
+        if (leftHandType == rightHandType) {
+            return leftHandType;
+        } else if (leftHandType == ExpressionType.UNDEFINED || rightHandType == ExpressionType.UNDEFINED) {
+            operation.setError("Ongeldige operatie: " + leftHandType + " + " + rightHandType + "; kan ongedefinieerde types niet bij elkaar optellen");
+            return ExpressionType.UNDEFINED;
         } else {
-            operation.setError("Ongeldige operatie: " + leftType + " + " + rightType + "; kan ongelijke types niet optellen");
+            operation.setError("Ongeldige operatie: " + leftHandType + " + " + rightHandType + "; kan ongelijke types niet optellen");
             return ExpressionType.UNDEFINED;
         }
     }
 
     private ExpressionType checkSubtractOperation(SubtractOperation operation) {
-        ExpressionType leftType = checkExpression(operation.lhs);
-        ExpressionType rightType = checkExpression(operation.rhs);
+        ExpressionType leftHandType = checkExpression(operation.lhs);
+        ExpressionType rightHandType = checkExpression(operation.rhs);
 
-        if (leftType == rightType) {
-            return leftType;
+        if (leftHandType == rightHandType) {
+            return leftHandType;
+        } else if (leftHandType == ExpressionType.UNDEFINED || rightHandType == ExpressionType.UNDEFINED) {
+            operation.setError("Ongeldige operatie: " + leftHandType + " - " + rightHandType + "; kan ongedefinieerde types niet van elkaar aftrekken");
+            return ExpressionType.UNDEFINED;
         } else {
-            operation.setError("Ongeldige operatie: " + leftType + " - " + rightType + "; kan ongelijke types niet aftrekken");
+            operation.setError("Ongeldige operatie: " + leftHandType + " - " + rightHandType + "; kan ongelijke types niet van elkaar aftrekken");
             return ExpressionType.UNDEFINED;
         }
     }
-
-    private void checkIfClause(IfClause ifClause) {
-        variableTypes.addFirst(new HashMap<>());
-        if (ifClause.conditionalExpression instanceof BoolLiteral) {
-            checkLiteral((BoolLiteral) ifClause.conditionalExpression);
-        } else if (ifClause.conditionalExpression instanceof VariableReference) {
-            if (checkVariableReference((VariableReference) ifClause.conditionalExpression) != ExpressionType.BOOL) {
-                ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
-            }
-        } else {
-            ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
-        }
-
-        for (ASTNode node : ifClause.body) {
-            if (node instanceof VariableAssignment) {
-                checkVariableAssignment((VariableAssignment) node);
-            } else if (node instanceof Declaration) {
-                checkDeclaration((Declaration) node);
-            } else if (node instanceof IfClause) {
-                checkIfClause((IfClause) node);
-            } else if (node instanceof ElseClause) {
-                checkElseClause((ElseClause) node);
-            } else {
-                node.setError("Ongeldige expressie: " + node.getClass().getSimpleName() + ", verwachtte VariableAssignment, Declaration, If Clause of Else Clause");
-            }
-        }
-
-    }
-
-    private void checkElseClause(ElseClause elseClause) {
-        variableTypes.addFirst(new HashMap<>());
-        for (ASTNode node : elseClause.body) {
-            if (node instanceof VariableAssignment) {
-                checkVariableAssignment((VariableAssignment) node);
-            } else if (node instanceof Declaration) {
-                checkDeclaration((Declaration) node);
-            } else {
-                node.setError("Else clause kan alleen worden gebruikt met declaraties en variabele toewijzingen");
-            }
-        }
-        variableTypes.removeFirst();
-    }
+//
+//    private void checkIfClause(IfClause ifClause) {
+//        variableTypes.addFirst(new HashMap<>());
+//        if (ifClause.conditionalExpression instanceof BoolLiteral) {
+//            checkLiteral((BoolLiteral) ifClause.conditionalExpression);
+//        } else if (ifClause.conditionalExpression instanceof VariableReference) {
+//            if (checkVariableReference((VariableReference) ifClause.conditionalExpression) != ExpressionType.BOOL) {
+//                ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
+//            }
+//        } else {
+//            ifClause.conditionalExpression.setError("Ongeldige expressie: " + ifClause.conditionalExpression.getClass().getSimpleName() + ", verwachtte Bool");
+//        }
+//
+//        for (ASTNode node : ifClause.body) {
+//            if (node instanceof VariableAssignment) {
+//                checkVariableAssignment((VariableAssignment) node);
+//            } else if (node instanceof Declaration) {
+//                checkDeclaration((Declaration) node);
+//            } else if (node instanceof IfClause) {
+//                checkIfClause((IfClause) node);
+//            } else if (node instanceof ElseClause) {
+//                checkElseClause((ElseClause) node);
+//            } else {
+//                node.setError("Ongeldige expressie: " + node.getClass().getSimpleName() + ", verwachtte VariableAssignment, Declaration, If Clause of Else Clause");
+//            }
+//        }
+//
+//    }
+//
+//    private void checkElseClause(ElseClause elseClause) {
+//        variableTypes.addFirst(new HashMap<>());
+//        for (ASTNode node : elseClause.body) {
+//            if (node instanceof VariableAssignment) {
+//                checkVariableAssignment((VariableAssignment) node);
+//            } else if (node instanceof Declaration) {
+//                checkDeclaration((Declaration) node);
+//            } else {
+//                node.setError("Else clause kan alleen worden gebruikt met declaraties en variabele toewijzingen");
+//            }
+//        }
+//        variableTypes.removeFirst();
+//    }
 
 
 }
