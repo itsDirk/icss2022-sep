@@ -3,6 +3,7 @@ package nl.han.ica.icss.transforms;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
+import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
@@ -10,6 +11,7 @@ import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Evaluator implements Transform {
@@ -147,12 +149,12 @@ public class Evaluator implements Transform {
         return 0;
     }
 
-    private void evaluateStylerule(Stylerule node) {
+    private void evaluateStylerule(Stylerule stylerule) {
         variableValues.addFirst(new HashMap<>());
-        for (ASTNode child : node.getChildren()) {
+        for (ASTNode child : stylerule.getChildren()) {
             if (child instanceof VariableAssignment) {
                 evaluateVariableAssignment((VariableAssignment) child);
-                node.removeChild(child);
+                stylerule.removeChild(child);
             } else if (child instanceof Declaration) {
                 evaluateDeclaration((Declaration) child);
             } else if (child instanceof IfClause) {
@@ -160,5 +162,43 @@ public class Evaluator implements Transform {
             }
         }
         variableValues.removeFirst();
+    }
+
+    private void evaluateDeclaration(Declaration declaration) {
+        if (declaration.expression instanceof VariableReference) {
+            declaration.expression = evaluateVariableLiteral(((VariableReference) declaration.expression).name);
+        } else if (declaration.expression instanceof Operation) {
+            declaration.expression = evaluateOperation((Operation) declaration.expression);
+        }
+    }
+
+    private void evaluateIfClause(IfClause child) {
+        if (evaluateIfClauseCondition(child)) {
+            evaluateIfClauseBody(child.body);
+        } else if (child.elseClause != null) {
+            evaluateIfClauseBody(child.elseClause.body);
+        }
+    }
+
+    private boolean evaluateIfClauseCondition(IfClause ifClause) {
+        if (ifClause.conditionalExpression instanceof VariableReference) {
+            var boolLiteral = evaluateVariableLiteral(((VariableReference) ifClause.conditionalExpression).name);
+            return ((BoolLiteral) boolLiteral).value;
+        } else if (ifClause.conditionalExpression instanceof BoolLiteral) {
+            return ((BoolLiteral) ifClause.conditionalExpression).value;
+        }
+        return false;
+    }
+
+    private void evaluateIfClauseBody(ArrayList<ASTNode> body) {
+        for (ASTNode child : body) {
+            if (child instanceof VariableAssignment) {
+                evaluateVariableAssignment((VariableAssignment) child);
+            } else if (child instanceof Declaration) {
+                evaluateDeclaration((Declaration) child);
+            } else if (child instanceof IfClause) {
+                evaluateIfClause((IfClause) child);
+            }
+        }
     }
 }
