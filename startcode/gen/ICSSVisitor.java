@@ -34,6 +34,18 @@ public interface ICSSVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPropertyName(ICSSParser.PropertyNameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ICSSParser#comment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComment(ICSSParser.CommentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ICSSParser#commentBody}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCommentBody(ICSSParser.CommentBodyContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ICSSParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

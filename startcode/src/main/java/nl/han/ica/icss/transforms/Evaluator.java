@@ -173,6 +173,8 @@ public class Evaluator implements Transform {
                 for (ASTNode node : output) {
                     declarations.add(node);
                 }
+            } else if (child instanceof Comment) {
+                declarations.add(child);
             }
 
         }
@@ -220,6 +222,8 @@ public class Evaluator implements Transform {
                 for (ASTNode node : output) {
                     declarations.add(node);
                 }
+            } else if (child instanceof Comment) {
+                declarations.add(child);
             }
         }
     }

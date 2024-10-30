@@ -28,6 +28,8 @@ CAPITAL_IDENT: [A-Z] [A-Za-z0-9_]*;
 
 //All whitespaces are skipped
 WS: [ \t\r\n]+ -> skip;
+// Lazy way to skip comments, by not doing anything with them
+//COMMENT: '/*' .*? '*/' -> skip;
 
 //
 OPEN_BRACE: '{';
@@ -38,17 +40,21 @@ PLUS: '+';
 MIN: '-';
 MUL: '*';
 ASSIGNMENT_OPERATOR: ':=';
+OPEN_COMMENT: '/*';
+CLOSE_COMMENT: '*/';
 
 
 
 
 //--- PARSER: ---
-stylesheet: variableAssignment* styleRule* EOF;
+stylesheet: (variableAssignment | comment)* (styleRule | comment)* EOF;
 
 variableAssignment: variableReference ASSIGNMENT_OPERATOR expression SEMICOLON;
 
 variableReference: CAPITAL_IDENT;
 propertyName: LOWER_IDENT;
+comment: OPEN_COMMENT commentBody CLOSE_COMMENT;
+commentBody: .*?;
 
 // Operations
 expression: expression MUL expression | expression (PLUS | MIN) expression | (variableReference | literal);
@@ -69,7 +75,7 @@ idSelector: ID_IDENT;
 
 styleRule: selector OPEN_BRACE ruleBody CLOSE_BRACE;
 
-ruleBody: (declaration | ifClause | variableAssignment)*;
+ruleBody: (declaration | ifClause | variableAssignment | comment)*;
 declaration: propertyName COLON expression SEMICOLON;
 ifClause: IF BOX_BRACKET_OPEN (variableReference | boolLiteral) BOX_BRACKET_CLOSE OPEN_BRACE ruleBody CLOSE_BRACE elseClause?;
 elseClause: ELSE OPEN_BRACE ruleBody CLOSE_BRACE;

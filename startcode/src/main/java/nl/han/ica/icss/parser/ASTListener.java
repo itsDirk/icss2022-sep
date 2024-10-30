@@ -188,7 +188,7 @@ public class ASTListener extends ICSSBaseListener {
                     operation = new MultiplyOperation();
                     break;
             }
-        currentContainer.push(operation);
+            currentContainer.push(operation);
         }
     }
 
@@ -226,4 +226,17 @@ public class ASTListener extends ICSSBaseListener {
         currentContainer.peek().addChild(elseClause);
     }
 
+    // Comment body
+    @Override
+    public void enterCommentBody(ICSSParser.CommentBodyContext ctx) {
+        Comment comment = new Comment();
+        comment.content = ctx.getText();
+        currentContainer.push(comment);
+    }
+
+    @Override
+    public void exitCommentBody(ICSSParser.CommentBodyContext ctx) {
+        Comment comment = (Comment) currentContainer.pop();
+        currentContainer.peek().addChild(comment);
+    }
 }

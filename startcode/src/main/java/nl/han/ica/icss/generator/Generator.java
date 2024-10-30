@@ -26,6 +26,11 @@ public class Generator {
                 sb.append(generateStyleRule((Stylerule) node));
                 // Create 2 new lines for every style rule for readability
                 sb.append("\n\n");
+            } else if (node instanceof Comment) {
+                sb.append("/*");
+                sb.append(((Comment) node).content);
+                sb.append("*/");
+                sb.append("\n");
             }
         }
 
@@ -52,7 +57,12 @@ public class Generator {
                 sb.append("\n");
             } else if (node instanceof IfClause) {
                 sb.append(generateIfClause((IfClause) node));
-//				sb.append("\t");
+            } else if (node instanceof Comment) {
+                sb.append("\t");
+                sb.append("/*");
+                sb.append(((Comment) node).content);
+                sb.append("*/");
+                sb.append("\n");
             }
         }
 

@@ -31,6 +31,8 @@ public class Checker {
                 checkVariableAssignment((VariableAssignment) node);
             } else if (node instanceof Stylerule) {
                 checkStyleRule((Stylerule) node);
+            } else if (node instanceof Comment) {
+                // Do nothing, we can ignore comments :D
             } else {
                 node.setError("Ongeldig type: Stylerule");
             }
@@ -252,6 +254,8 @@ public class Checker {
                 checkDeclaration((Declaration) node);
             } else if (node instanceof IfClause) {
                 checkIfClause((IfClause) node);
+            } else if (node instanceof Comment) {
+                // Do nothing, we can ignore comments
             } else {
                 node.setError("Ongeldige expressie: " + node.getClass().getSimpleName() + ", verwachtte VariableAssignment, Declaration, If Clause of Else Clause");
             }
@@ -270,6 +274,8 @@ public class Checker {
                 checkVariableAssignment((VariableAssignment) node);
             } else if (node instanceof Declaration) {
                 checkDeclaration((Declaration) node);
+            } else if (node instanceof Comment) {
+                // Do nothing, we can ignore comments
             } else {
                 node.setError("Else clause kan alleen worden gebruikt met declaraties en variabele toewijzingen");
             }
