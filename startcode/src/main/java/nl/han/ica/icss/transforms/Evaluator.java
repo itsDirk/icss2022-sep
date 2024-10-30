@@ -29,13 +29,22 @@ public class Evaluator implements Transform {
 
     private void evaluateStylesheet(Stylesheet stylesheet) {
         variableValues.addFirst(new HashMap<>());
+
+        // Create a list of nodes to remove instead of removing them right away, because we can't remove nodes while iterating over them
+        // Otherwise, the ConcurrentModificationException will be thrown
+        ArrayList<ASTNode> nodesToRemove = new ArrayList<>();
         for (ASTNode node : stylesheet.getChildren()) {
             if (node instanceof VariableAssignment) {
                 evaluateVariableAssignment((VariableAssignment) node);
-                stylesheet.removeChild(node);
+                nodesToRemove.add(node);
             } else if (node instanceof Stylerule) {
                 evaluateStylerule((Stylerule) node);
             }
+        }
+
+        // Remove the nodes that were marked for removal
+        for (ASTNode node : nodesToRemove) {
+            stylesheet.removeChild(node);
         }
 
         variableValues.removeFirst();
@@ -151,16 +160,23 @@ public class Evaluator implements Transform {
 
     private void evaluateStylerule(Stylerule stylerule) {
         variableValues.addFirst(new HashMap<>());
+        // Use a list of children to remove for the same reason as in evaluateStylesheet
+        ArrayList<ASTNode> childrenToRemove = new ArrayList<>();
         for (ASTNode child : stylerule.getChildren()) {
             if (child instanceof VariableAssignment) {
                 evaluateVariableAssignment((VariableAssignment) child);
-                stylerule.removeChild(child);
+                childrenToRemove.add(child);
             } else if (child instanceof Declaration) {
                 evaluateDeclaration((Declaration) child);
             } else if (child instanceof IfClause) {
                 evaluateIfClause((IfClause) child);
             }
         }
+        // Follow through with the removal of the child nodes
+        for (ASTNode child : childrenToRemove) {
+            stylerule.removeChild(child);
+        }
+
         variableValues.removeFirst();
     }
 
