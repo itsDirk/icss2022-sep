@@ -160,23 +160,23 @@ public class Evaluator implements Transform {
 
     private void evaluateStylerule(Stylerule stylerule) {
         variableValues.addFirst(new HashMap<>());
+        ArrayList<ASTNode> declarations = new ArrayList<>();
         // Use a list of children to remove for the same reason as in evaluateStylesheet
-        ArrayList<ASTNode> childrenToRemove = new ArrayList<>();
         for (ASTNode child : stylerule.getChildren()) {
             if (child instanceof VariableAssignment) {
                 evaluateVariableAssignment((VariableAssignment) child);
-                childrenToRemove.add(child);
             } else if (child instanceof Declaration) {
                 evaluateDeclaration((Declaration) child);
+                declarations.add(child);
             } else if (child instanceof IfClause) {
-                evaluateIfClause((IfClause) child);
+                var output = evaluateIfClause((IfClause) child);
+                for (ASTNode node : output) {
+                    declarations.add(node);
+                }
             }
-        }
-        // Follow through with the removal of the child nodes
-        for (ASTNode child : childrenToRemove) {
-            stylerule.removeChild(child);
-        }
 
+        }
+        stylerule.body = declarations;
         variableValues.removeFirst();
     }
 
@@ -188,12 +188,14 @@ public class Evaluator implements Transform {
         }
     }
 
-    private void evaluateIfClause(IfClause ifClause) {
+    private ArrayList<ASTNode> evaluateIfClause(IfClause ifClause) {
+        ArrayList<ASTNode> declarations = new ArrayList<>();
         if (evaluateIfClauseCondition(ifClause)) {
-            evaluateIfClauseBody(ifClause.body);
+            evaluateIfClauseBody(ifClause.body, declarations);
         } else if (ifClause.elseClause != null) {
-            evaluateIfClauseBody(ifClause.elseClause.body);
+            evaluateIfClauseBody(ifClause.elseClause.body, declarations);
         }
+        return declarations;
     }
 
     private boolean evaluateIfClauseCondition(IfClause ifClause) {
@@ -206,14 +208,18 @@ public class Evaluator implements Transform {
         return false;
     }
 
-    private void evaluateIfClauseBody(ArrayList<ASTNode> body) {
+    private void evaluateIfClauseBody(ArrayList<ASTNode> body, ArrayList<ASTNode> declarations) {
         for (ASTNode child : body) {
             if (child instanceof VariableAssignment) {
                 evaluateVariableAssignment((VariableAssignment) child);
             } else if (child instanceof Declaration) {
                 evaluateDeclaration((Declaration) child);
+                declarations.add(child);
             } else if (child instanceof IfClause) {
-                evaluateIfClause((IfClause) child);
+                var output = evaluateIfClause((IfClause) child);
+                for (ASTNode node : output) {
+                    declarations.add(node);
+                }
             }
         }
     }
