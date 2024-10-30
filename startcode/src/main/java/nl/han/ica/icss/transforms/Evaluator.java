@@ -147,13 +147,13 @@ public class Evaluator implements Transform {
         }
     }
 
-    private int getLiteralAsInt(Literal leftHandSide) {
-        if (leftHandSide instanceof PercentageLiteral) {
-            return ((PercentageLiteral) leftHandSide).value;
-        } else if (leftHandSide instanceof PixelLiteral) {
-            return ((PixelLiteral) leftHandSide).value;
-        } else if (leftHandSide instanceof ScalarLiteral) {
-            return ((ScalarLiteral) leftHandSide).value;
+    private int getLiteralAsInt(Literal literal) {
+        if (literal instanceof PercentageLiteral) {
+            return ((PercentageLiteral) literal).value;
+        } else if (literal instanceof PixelLiteral) {
+            return ((PixelLiteral) literal).value;
+        } else if (literal instanceof ScalarLiteral) {
+            return ((ScalarLiteral) literal).value;
         }
         return 0;
     }
@@ -188,11 +188,11 @@ public class Evaluator implements Transform {
         }
     }
 
-    private void evaluateIfClause(IfClause child) {
-        if (evaluateIfClauseCondition(child)) {
-            evaluateIfClauseBody(child.body);
-        } else if (child.elseClause != null) {
-            evaluateIfClauseBody(child.elseClause.body);
+    private void evaluateIfClause(IfClause ifClause) {
+        if (evaluateIfClauseCondition(ifClause)) {
+            evaluateIfClauseBody(ifClause.body);
+        } else if (ifClause.elseClause != null) {
+            evaluateIfClauseBody(ifClause.elseClause.body);
         }
     }
 
