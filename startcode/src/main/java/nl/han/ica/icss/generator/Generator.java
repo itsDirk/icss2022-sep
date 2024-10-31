@@ -27,9 +27,9 @@ public class Generator {
                 // Create 2 new lines for every style rule for readability
                 sb.append("\n\n");
             } else if (node instanceof Comment) {
-                sb.append("/*");
+                sb.append("/* ");
                 sb.append(((Comment) node).content);
-                sb.append("*/");
+                sb.append(" */");
                 sb.append("\n");
             }
         }
@@ -59,9 +59,9 @@ public class Generator {
                 sb.append(generateIfClause((IfClause) node));
             } else if (node instanceof Comment) {
                 sb.append("\t");
-                sb.append("/*");
+                sb.append("/* ");
                 sb.append(((Comment) node).content);
-                sb.append("*/");
+                sb.append(" */");
                 sb.append("\n");
             }
         }
